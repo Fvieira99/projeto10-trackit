@@ -1,8 +1,28 @@
 import { createGlobalStyle } from "styled-components";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Home from "./home/Home";
-import SignIn from "./signin/SignIn";
+import CreateAccount from "./createaccount/CreateAccount";
 import Habits from "./habits/Habits";
+import Today from "./today/Today";
+import Historic from "./historic/Historic";
+
+function App() {
+	return (
+		<BrowserRouter>
+			<GlobalStyle />
+			<Routes>
+				<Route path="/" element={<Home />}></Route>
+				<Route path="/cadastro" element={<CreateAccount />}></Route>
+				<Route path="/habitos" element={<Habits />}></Route>
+				<Route path="/hoje" element={<Today />}></Route>
+				<Route path="/historico" element={<Historic />}></Route>
+			</Routes>
+		</BrowserRouter>
+	);
+}
+
+export default App;
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -134,21 +154,4 @@ table {
     box-sizing: border-box;
 }
 
-
-
 `;
-
-function App() {
-	return (
-		<BrowserRouter>
-			<GlobalStyle />
-			<Routes>
-				<Route path="/" element={<Home />}></Route>
-				<Route path="/cadastro" element={<SignIn />}></Route>
-				<Route path="/habitos" element={<Habits />}></Route>
-			</Routes>
-		</BrowserRouter>
-	);
-}
-
-export default App;

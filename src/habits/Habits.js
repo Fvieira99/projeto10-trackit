@@ -3,6 +3,21 @@ import styled from "styled-components";
 
 import Header from "../Header";
 
+const habits = 0;
+
+function showHabits() {
+	if (habits > 0) {
+		return <span>Aqui vai um hábito</span>;
+	} else {
+		return (
+			<Text>
+				Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
+				começar a trackear!
+			</Text>
+		);
+	}
+}
+
 function Habits() {
 	return (
 		<Container>
@@ -11,10 +26,7 @@ function Habits() {
 				<span>Meus Hábitos</span>
 				<button>+</button>
 			</Title>
-			<Text>
-				Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
-				começar a trackear!
-			</Text>
+			{showHabits()}
 		</Container>
 	);
 }
