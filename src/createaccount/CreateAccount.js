@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import logo from "../assets/logo-trackit.png";
 
 function CreateAccount() {
 	const [inputValue, setInputValue] = useState({
@@ -28,7 +29,7 @@ function CreateAccount() {
 			navigate("/");
 		});
 		promise.catch((error) => {
-			if (error.response.status === 409) {
+			if (error.status === 409) {
 				alert("Usuario e/ou e-mail já existente(s)");
 				setLoad(false);
 				setInputValue({ email: "", name: "", image: "", password: "" });
@@ -44,6 +45,7 @@ function CreateAccount() {
 		return (
 			<>
 				<Input
+					disabled={load}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, email: e.target.value });
 					}}
@@ -57,6 +59,7 @@ function CreateAccount() {
 				></Input>
 
 				<Input
+					disabled={load}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, password: e.target.value });
 					}}
@@ -71,6 +74,7 @@ function CreateAccount() {
 				></Input>
 
 				<Input
+					disabled={load}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, name: e.target.value });
 					}}
@@ -85,6 +89,7 @@ function CreateAccount() {
 				></Input>
 
 				<Input
+					disabled={load}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, image: e.target.value });
 					}}
@@ -98,15 +103,22 @@ function CreateAccount() {
 					load={load}
 				></Input>
 
-				<Button load={load} type="submit">
-					Cadastrar
-				</Button>
+				{load ? (
+					<Button load={load} type="submit">
+						Cadastrar
+					</Button>
+				) : (
+					<Button load={load} type="submit">
+						Carregando
+					</Button>
+				)}
 			</>
 		);
 	}
 
 	return (
 		<Container>
+			<img src={logo} />
 			<h1>TrackIt</h1>
 			<SignUpForm onSubmit={sendAccountInfo}>{showSignUpForm()}</SignUpForm>
 			<Link to="/">
@@ -131,6 +143,11 @@ const Container = styled.div`
 		font-weight: 400;
 		font-size: 69px;
 		color: #126ba5;
+		margin-bottom: 20px;
+	}
+	img {
+		margin-top: 70px;
+		width: 50%;
 	}
 `;
 
@@ -150,6 +167,7 @@ const SignUpForm = styled.form`
 		flex-direction: column;
 		width: 85%;
 		gap: 6px;
+		margin-bottom: 25px;
 	}
 `;
 
