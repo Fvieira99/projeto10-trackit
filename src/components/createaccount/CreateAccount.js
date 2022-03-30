@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import logo from "../assets/logo-trackit.png";
+import logo from "../../assets/logo-trackit.png";
 
 function CreateAccount() {
 	const [inputValue, setInputValue] = useState({

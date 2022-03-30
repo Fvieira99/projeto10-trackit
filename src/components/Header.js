@@ -1,11 +1,18 @@
 import styled from "styled-components";
+import { useContext } from "react";
+
+import UserContext from "../contexts/UserContext";
 
 function Header() {
+	const {
+		userInfo: { image },
+	} = useContext(UserContext);
+
 	return (
 		<Container>
 			<Content>
 				<span>TrackIt</span>
-				<img></img>
+				<img src={image}></img>
 			</Content>
 		</Container>
 	);
@@ -14,6 +21,8 @@ function Header() {
 export default Header;
 
 const Container = styled.header`
+	position: fixed;
+	top: 0;
 	width: 100%;
 	height: 70px;
 	background-color: #126ba5;
@@ -27,11 +36,16 @@ const Content = styled.div`
 	width: 90%;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	span {
 		font-family: "Playball";
 		font-style: normal;
 		font-weight: 400;
 		font-size: 39px;
 		color: #ffffff;
+	}
+
+	img {
+		width: 51px;
 	}
 `;

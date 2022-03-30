@@ -1,13 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
 import styled from "styled-components";
-import { useState } from "react";
 import axios from "axios";
-import logo from "../assets/logo-trackit.png";
+
+import UserContext from "../../contexts/UserContext";
+import logo from "../../assets/logo-trackit.png";
 
 function Home() {
 	const [inputValue, setInputValue] = useState({ email: "", password: "" });
 	const [load, setLoad] = useState(false);
 
+	const { userInfo, setUserInfo } = useContext(UserContext);
 	const navigate = useNavigate();
 
 	function sendLoginInfo(e) {
@@ -20,8 +23,8 @@ function Home() {
 
 		promise.then((response) => {
 			console.log(response);
-			alert("UHULL");
-			navigate("/hoje", { state: response.data });
+			navigate("/hoje");
+			setUserInfo(response.data);
 		});
 
 		promise.catch((error) => {

@@ -1,6 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
 
+import UserContext from "../contexts/UserContext";
 import Home from "./home/Home";
 import CreateAccount from "./createaccount/CreateAccount";
 import Habits from "./habits/Habits";
@@ -8,17 +10,21 @@ import Today from "./today/Today";
 import Historic from "./historic/Historic";
 
 function App() {
+	const [userInfo, setUserInfo] = useState({});
+
 	return (
-		<BrowserRouter>
-			<GlobalStyle />
-			<Routes>
-				<Route path="/" element={<Home />}></Route>
-				<Route path="/cadastro" element={<CreateAccount />}></Route>
-				<Route path="/habitos" element={<Habits />}></Route>
-				<Route path="/hoje" element={<Today />}></Route>
-				<Route path="/historico" element={<Historic />}></Route>
-			</Routes>
-		</BrowserRouter>
+		<UserContext.Provider value={{ userInfo, setUserInfo }}>
+			<BrowserRouter>
+				<GlobalStyle />
+				<Routes>
+					<Route path="/" element={<Home />}></Route>
+					<Route path="/cadastro" element={<CreateAccount />}></Route>
+					<Route path="/habitos" element={<Habits />}></Route>
+					<Route path="/hoje" element={<Today />}></Route>
+					<Route path="/historico" element={<Historic />}></Route>
+				</Routes>
+			</BrowserRouter>
+		</UserContext.Provider>
 	);
 }
 
