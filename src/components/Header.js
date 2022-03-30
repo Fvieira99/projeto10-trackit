@@ -5,14 +5,14 @@ import UserContext from "../contexts/UserContext";
 
 function Header() {
 	const {
-		userInfo: { image },
+		userInfo: { image, name },
 	} = useContext(UserContext);
 
 	return (
 		<Container>
 			<Content>
 				<span>TrackIt</span>
-				<img src={image}></img>
+				<img src={image} alt={(name, "image")}></img>
 			</Content>
 		</Container>
 	);

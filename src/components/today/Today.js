@@ -10,7 +10,7 @@ import Header from "../Header";
 import axios from "axios";
 
 function Today() {
-	const { userInfo, setUserInfo } = useContext(UserContext);
+	const { userInfo } = useContext(UserContext);
 	const config = {
 		headers: {
 			Authorization: `Bearer ${userInfo.token}`,
@@ -55,7 +55,7 @@ function Today() {
 									</div>
 								</div>
 								<CheckBox>
-									<img src={check} />
+									<img src={check} alt="check-icon" />
 								</CheckBox>
 							</Habit>
 						);

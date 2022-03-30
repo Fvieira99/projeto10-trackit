@@ -1,20 +1,23 @@
 import axios from "axios";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import styled from "styled-components";
 
+import HabitsContext from "../../contexts/HabitsContext";
 import UserContext from "../../contexts/UserContext";
 
 function CreateHabit({ setIsCreatingHabit }) {
 	const [newHabitInfo, setNewHabitInfo] = useState({ name: "", days: [] });
-	const [weekdaysIndex, setWeekdaysIndex] = useState([]);
 	const weekdays = ["D", "S", "T", "Q", "S", "S"];
-	const [isLoading, setIsLoading] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
 	const { userInfo } = useContext(UserContext);
+	const { habits, setHabits } = useContext(HabitsContext);
 	const config = {
 		headers: {
 			Authorization: `Bearer ${userInfo.token}`,
 		},
 	};
+
+	console.log(newHabitInfo);
 
 	function sendNewHabit() {
 		console.log(newHabitInfo);
@@ -26,25 +29,27 @@ function CreateHabit({ setIsCreatingHabit }) {
 
 			promise.then((response) => {
 				console.log(response);
+				setHabits([...habits, response.data]);
 				setIsCreatingHabit(0);
 			});
 			promise.catch((err) => {
 				console(err.response);
 				alert("Preencha os dados corretamente");
-				setIsLoading(0);
-				setWeekdaysIndex([]);
+				setIsLoading(false);
 				setNewHabitInfo({ name: "", days: [] });
 			});
 		}
 	}
 
 	function toggleDay(index) {
-		const selected = weekdaysIndex.some((number) => number === index);
+		const selected = newHabitInfo.days.some((number) => number === index);
 		if (!selected) {
-			setWeekdaysIndex([...weekdaysIndex, index]);
+			setNewHabitInfo({ ...newHabitInfo, days: [...newHabitInfo.days, index] });
 		} else {
-			const newSelected = weekdaysIndex.filter((number) => number !== index);
-			setWeekdaysIndex(newSelected);
+			const newSelected = newHabitInfo.days.filter(
+				(number) => number !== index
+			);
+			setNewHabitInfo({ ...newHabitInfo, days: newSelected });
 		}
 	}
 
@@ -52,12 +57,12 @@ function CreateHabit({ setIsCreatingHabit }) {
 		return weekdays.map((weekday, index) => {
 			return (
 				<Weekday
+					isLoading={isLoading}
 					key={index}
-					days={weekdaysIndex}
-					index={index}
+					days={newHabitInfo.days}
+					i={index}
 					onClick={() => {
 						toggleDay(index);
-						setNewHabitInfo({ ...newHabitInfo, days: [...weekdaysIndex] });
 					}}
 				>
 					{weekday}
@@ -69,13 +74,15 @@ function CreateHabit({ setIsCreatingHabit }) {
 	return (
 		<Wrapper>
 			<ContainerForm>
-				<input
+				<Input
+					isLoading={isLoading}
+					disabled={isLoading}
 					value={newHabitInfo.name}
 					onChange={(e) => {
 						setNewHabitInfo({ ...newHabitInfo, name: e.target.value });
 					}}
 					placeholder="nome do hábito"
-				></input>
+				></Input>
 				<div>{createWeekdays()}</div>
 			</ContainerForm>
 			<ContainerOptions>
@@ -86,14 +93,15 @@ function CreateHabit({ setIsCreatingHabit }) {
 				>
 					Cancelar
 				</span>
-				<button
+				<Button
+					isLoading={isLoading}
 					onClick={() => {
-						setIsLoading(1);
+						setIsLoading(true);
 						sendNewHabit();
 					}}
 				>
 					Salvar
-				</button>
+				</Button>
 			</ContainerOptions>
 		</Wrapper>
 	);
@@ -109,29 +117,13 @@ const Wrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	margin-bottom: 20px;
 `;
 
 const ContainerForm = styled.form`
 	width: 90%;
 	margin: 15px auto 0 auto;
-	input {
-		font-family: "Lexend Deca";
-		font-style: normal;
-		font-weight: 400;
-		font-size: 20px;
-		text-indent: 5px;
-		width: 100%;
-		height: 45px;
-		border: 1px solid #d4d4d4;
-		border-radius: 5px;
-	}
-	input::placeholder {
-		font-family: "Lexend Deca";
-		font-style: normal;
-		font-weight: 400;
-		font-size: 20px;
-		color: #dbdbdb;
-	}
+
 	div {
 		margin-top: 4px;
 		display: flex;
@@ -140,6 +132,7 @@ const ContainerForm = styled.form`
 `;
 
 const Weekday = styled.div`
+	pointer-events: ${(props) => (props.isLoading ? "none" : "all")};
 	width: 30px;
 	height: 30px;
 	display: flex;
@@ -151,15 +144,11 @@ const Weekday = styled.div`
 	font-weight: 400;
 	font-size: 19.976px;
 	color: ${(props) =>
-		props.days.some((number) => number === props.index)
-			? "#FFFFFF"
-			: "#CFCFCF"};
+		props.days.some((number) => number === props.i) ? "#FFFFFF" : "#CFCFCF"};
 
 	border-radius: 5px;
 	background-color: ${(props) =>
-		props.days.some((number) => number === props.index)
-			? "#CFCFCF"
-			: "#FFFFFF"};
+		props.days.some((number) => number === props.i) ? "#CFCFCF" : "#FFFFFF"};
 `;
 
 const ContainerOptions = styled.div`
@@ -178,15 +167,40 @@ const ContainerOptions = styled.div`
 		color: #52b6ff;
 	}
 	button {
-		width: 84px;
-		height: 35px;
-		background: #52b6ff;
-		border: none;
-		border-radius: 4.5px;
+	}
+`;
+
+const Input = styled.input`
+	font-family: "Lexend Deca";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 20px;
+	text-indent: 5px;
+	width: 100%;
+	height: 45px;
+	border: 1px solid #d4d4d4;
+	border-radius: 5px;
+	background-color: ${(props) => (props.isLoading ? "#f2f2f2" : "#ffffff;")};
+
+	::placeholder {
 		font-family: "Lexend Deca";
 		font-style: normal;
 		font-weight: 400;
-		font-size: 16px;
-		color: #ffffff;
+		font-size: 20px;
+		color: #dbdbdb;
 	}
+`;
+
+const Button = styled.button`
+	width: 84px;
+	height: 35px;
+	background-color: #52b6ff;
+	opacity: ${(props) => (props.isLoading ? "0.7" : "1")};
+	border: none;
+	border-radius: 4.5px;
+	font-family: "Lexend Deca";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	color: #ffffff;
 `;

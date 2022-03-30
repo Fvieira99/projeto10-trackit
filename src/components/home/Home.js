@@ -10,7 +10,7 @@ function Home() {
 	const [inputValue, setInputValue] = useState({ email: "", password: "" });
 	const [load, setLoad] = useState(false);
 
-	const { userInfo, setUserInfo } = useContext(UserContext);
+	const { setUserInfo } = useContext(UserContext);
 	const navigate = useNavigate();
 
 	function sendLoginInfo(e) {
@@ -77,7 +77,7 @@ function Home() {
 
 	return (
 		<Container>
-			<img src={logo} />
+			<img src={logo} alt="trackit logo" />
 			<h1>TrackIt</h1>
 			<LoginForm onSubmit={sendLoginInfo}>{showLoginForm()}</LoginForm>
 			<Link to="/cadastro">

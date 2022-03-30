@@ -118,7 +118,7 @@ function CreateAccount() {
 
 	return (
 		<Container>
-			<img src={logo} />
+			<img src={logo} alt="trackit logo" />
 			<h1>TrackIt</h1>
 			<SignUpForm onSubmit={sendAccountInfo}>{showSignUpForm()}</SignUpForm>
 			<Link to="/">
