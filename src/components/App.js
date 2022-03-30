@@ -16,18 +16,19 @@ function App() {
 
 	return (
 		<UserContext.Provider value={{ userInfo, setUserInfo }}>
-			<BrowserRouter>
-				<GlobalStyle />
-				<Routes>
-					<Route path="/" element={<Home />}></Route>
-					<Route path="/cadastro" element={<CreateAccount />}></Route>
-					<HabitsContext value={{ habits, setHabits }}>
+			<HabitsContext.Provider value={{ habits, setHabits }}>
+				<BrowserRouter>
+					<GlobalStyle />
+					<Routes>
+						<Route path="/" element={<Home />}></Route>
+						<Route path="/cadastro" element={<CreateAccount />}></Route>
+
 						<Route path="/habitos" element={<Habits />}></Route>
 						<Route path="/hoje" element={<Today />}></Route>
 						<Route path="/historico" element={<Historic />}></Route>
-					</HabitsContext>
-				</Routes>
-			</BrowserRouter>
+					</Routes>
+				</BrowserRouter>
+			</HabitsContext.Provider>
 		</UserContext.Provider>
 	);
 }
