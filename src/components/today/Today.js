@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
@@ -12,30 +11,34 @@ import axios from "axios";
 
 function Today() {
 	const { userInfo, setUserInfo } = useContext(UserContext);
-	console.log(userInfo.token);
-
-	const date = dayjs().locale("pt-br").format("dddd, DD/MM");
-
-	const { habits, setHabits } = useState(null);
-
 	const config = {
 		headers: {
 			Authorization: `Bearer ${userInfo.token}`,
 		},
 	};
 
+	console.log(config);
+
+	const date = dayjs().locale("pt-br").format("dddd, DD/MM");
+
+	const [habits, setHabits] = useState(null);
+
 	useEffect(() => {
 		const URL =
 			"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today";
 
-		const promise = axios.get(URL, config);
-		promise.then((response) => {
-			const { data } = response;
-			setHabits(data);
-		});
+		if (userInfo.token) {
+			const promise = axios.get(URL, config);
+			console.log("mandei a requisição");
+			promise.then((response) => {
+				const { data } = response;
+				console.log(data);
+				setHabits(data);
+			});
 
-		promise.catch((err) => console.log(err.response));
-	}, []);
+			promise.catch((err) => console.log(err.response));
+		}
+	}, [userInfo]);
 
 	function showTodayHabits() {
 		if (habits) {

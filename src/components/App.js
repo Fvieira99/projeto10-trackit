@@ -2,6 +2,7 @@ import { createGlobalStyle } from "styled-components";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
+import HabitsContext from "../contexts/HabitsContext";
 import UserContext from "../contexts/UserContext";
 import Home from "./home/Home";
 import CreateAccount from "./createaccount/CreateAccount";
@@ -11,6 +12,7 @@ import Historic from "./historic/Historic";
 
 function App() {
 	const [userInfo, setUserInfo] = useState({});
+	const [habits, setHabits] = useState([]);
 
 	return (
 		<UserContext.Provider value={{ userInfo, setUserInfo }}>
@@ -19,9 +21,11 @@ function App() {
 				<Routes>
 					<Route path="/" element={<Home />}></Route>
 					<Route path="/cadastro" element={<CreateAccount />}></Route>
-					<Route path="/habitos" element={<Habits />}></Route>
-					<Route path="/hoje" element={<Today />}></Route>
-					<Route path="/historico" element={<Historic />}></Route>
+					<HabitsContext value={{ habits, setHabits }}>
+						<Route path="/habitos" element={<Habits />}></Route>
+						<Route path="/hoje" element={<Today />}></Route>
+						<Route path="/historico" element={<Historic />}></Route>
+					</HabitsContext>
 				</Routes>
 			</BrowserRouter>
 		</UserContext.Provider>
