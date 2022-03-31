@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useState, useContext } from "react";
 import styled from "styled-components";
+import { ThreeDots } from "react-loader-spinner";
+import Swal from "sweetalert2";
 
 import HabitsContext from "../../contexts/HabitsContext";
 import UserContext from "../../contexts/UserContext";
 
-function CreateHabit({ setIsCreatingHabit }) {
+function CreateHabit(props) {
+	const { isCreatingHabit, setIsCreatingHabit } = props;
 	const [newHabitInfo, setNewHabitInfo] = useState({ name: "", days: [] });
 	const weekdays = ["D", "S", "T", "Q", "S", "S"];
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +34,8 @@ function CreateHabit({ setIsCreatingHabit }) {
 				console.log(response);
 				setHabits([...habits, response.data]);
 				setIsCreatingHabit(0);
+				setIsLoading(false);
+				setNewHabitInfo({ name: "", days: [] });
 			});
 			promise.catch((err) => {
 				console(err.response);
@@ -72,7 +77,7 @@ function CreateHabit({ setIsCreatingHabit }) {
 	}
 
 	return (
-		<Wrapper>
+		<Wrapper isCreatingHabit={isCreatingHabit}>
 			<ContainerForm>
 				<Input
 					isLoading={isLoading}
@@ -86,22 +91,35 @@ function CreateHabit({ setIsCreatingHabit }) {
 				<div>{createWeekdays()}</div>
 			</ContainerForm>
 			<ContainerOptions>
-				<span
+				<Cancel
+					isLoading={isLoading}
 					onClick={() => {
 						setIsCreatingHabit(0);
 					}}
 				>
 					Cancelar
-				</span>
-				<Button
+				</Cancel>
+				<Save
 					isLoading={isLoading}
 					onClick={() => {
-						setIsLoading(true);
-						sendNewHabit();
+						if (newHabitInfo.days.length > 0 && newHabitInfo.name.length > 0) {
+							setIsLoading(true);
+							sendNewHabit();
+						} else {
+							Swal.fire({
+								icon: "error",
+								title: "Opss...",
+								text: "Alguma coisa deu errado! \b Preencha novamente seu hábito",
+							});
+						}
 					}}
 				>
-					Salvar
-				</Button>
+					{isLoading ? (
+						<ThreeDots color="#fff" height="40" width="40" />
+					) : (
+						"Salvar"
+					)}
+				</Save>
 			</ContainerOptions>
 		</Wrapper>
 	);
@@ -114,7 +132,7 @@ const Wrapper = styled.div`
 	height: 180px;
 	background-color: #fff;
 	border-radius: 5px;
-	display: flex;
+	display: ${(props) => (props.isCreatingHabit ? "flex" : "none")};
 	flex-direction: column;
 	justify-content: space-between;
 	margin-bottom: 20px;
@@ -158,16 +176,6 @@ const ContainerOptions = styled.div`
 	align-items: center;
 	margin: 0 auto 15px auto;
 	gap: 23px;
-
-	span {
-		font-family: "Lexend Deca";
-		font-style: normal;
-		font-weight: 400;
-		font-size: 16px;
-		color: #52b6ff;
-	}
-	button {
-	}
 `;
 
 const Input = styled.input`
@@ -191,9 +199,12 @@ const Input = styled.input`
 	}
 `;
 
-const Button = styled.button`
+const Save = styled.button`
 	width: 84px;
 	height: 35px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background-color: #52b6ff;
 	opacity: ${(props) => (props.isLoading ? "0.7" : "1")};
 	border: none;
@@ -203,4 +214,14 @@ const Button = styled.button`
 	font-weight: 400;
 	font-size: 16px;
 	color: #ffffff;
+`;
+
+const Cancel = styled.span`
+	font-family: "Lexend Deca";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	color: #52b6ff;
+	pointer-events: ${(props) => (props.isLoading ? "none" : "all")};
+	opacity: ${(props) => (props.isLoading ? "0.7" : "1")};
 `;

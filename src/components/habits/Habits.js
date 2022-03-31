@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { BsFillPlusSquareFill } from "react-icons/bs";
 
 import HabitsContext from "../../contexts/HabitsContext";
 import UserContext from "../../contexts/UserContext";
@@ -38,10 +39,12 @@ function Habits() {
 	}, [habits, userInfo]);
 
 	function showHabitForm() {
-		if (isCreatingHabit) {
-			return <CreateHabit setIsCreatingHabit={setIsCreatingHabit} />;
-		}
-		return <></>;
+		return (
+			<CreateHabit
+				setIsCreatingHabit={setIsCreatingHabit}
+				isCreatingHabit={isCreatingHabit}
+			/>
+		);
 	}
 
 	function showHabits() {
@@ -73,13 +76,13 @@ function Habits() {
 			<Container>
 				<Title>
 					<span>Meus Hábitos</span>
-					<button
+					<div
 						onClick={() => {
 							setIsCreatingHabit(1);
 						}}
 					>
-						<span>+</span>
-					</button>
+						<BsFillPlusSquareFill color="#52B6FF" size="35px" />
+					</div>
 				</Title>
 				{showHabitForm()}
 				{showHabits()}
@@ -92,7 +95,7 @@ function Habits() {
 export default Habits;
 
 const Wrapper = styled.div`
-	min-height: calc(100vh - 185px);
+	min-height: calc(100vh);
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -121,30 +124,21 @@ const Title = styled.div`
 		font-style: normal;
 		font-weight: 400;
 		font-size: 23px;
+		line-height: 29px;
 		color: #126ba5;
 	}
 
-	button {
+	div {
+		width: 51px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 40px;
-		height: 35px;
-		background-color: #52b6ff;
 		border: none;
 		border-radius: 4.63636px;
 		font-family: "Lexend Deca";
 		font-style: normal;
 		font-weight: 400;
 		font-size: 27px;
-		color: #ffffff;
-	}
-	button span {
-		font-family: "Lexend Deca";
-		font-style: normal;
-		font-weight: 400;
-		font-size: 27px;
-		color: #ffffff;
 	}
 `;
 

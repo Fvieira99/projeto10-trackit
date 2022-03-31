@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import styled from "styled-components";
+import { BsFillTrashFill } from "react-icons/bs";
+import Swal from "sweetalert2";
 
 import UserContext from "../../contexts/UserContext";
 import HabitsContext from "../../contexts/HabitsContext";
@@ -39,11 +41,24 @@ function Habit(props) {
 						<p>{name}</p>
 						<span
 							onClick={() => {
-								deleteHabit();
-								setHabits();
+								Swal.fire({
+									title: "Deseja deletar este hábito?",
+									text: "Não será possível reverter esta ação!",
+									icon: "warning",
+									showCancelButton: true,
+									confirmButtonColor: "#3085d6",
+									cancelButtonColor: "#d33",
+									confirmButtonText: "Sim",
+									cancelButtonText: "Não",
+								}).then((result) => {
+									if (result.isConfirmed) {
+										deleteHabit();
+										setHabits();
+									}
+								});
 							}}
 						>
-							X
+							<BsFillTrashFill />
 						</span>
 					</Name>
 					<div>
@@ -90,9 +105,9 @@ const Weekday = styled.div`
 	font-style: normal;
 	font-weight: 400;
 	color: ${(props) =>
-		props.days.some((day) => day === props.i) ? "#FFFFFF" : "#666666"};
+		props.days.some((day) => day === props.i) ? "#FFFFFF" : "#CFCFCF"};
 	background-color: ${(props) =>
-		props.days.some((day) => day === props.i) ? "#666666" : "#FFFFFF"};
+		props.days.some((day) => day === props.i) ? "#CFCFCF" : "#FFFFFF"};
 
 	width: 30px;
 	height: 30px;
@@ -111,5 +126,12 @@ const Name = styled.div`
 	font-size: 20px;
 	color: #666666;
 	line-height: 25px;
+
+	span {
+		width: 35px;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
 `;
 export default Habit;

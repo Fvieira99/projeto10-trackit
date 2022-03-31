@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useContext } from "react";
 
 import Footer from "../Footer";
-import check from "../../assets/Group.png";
+import TodayHabit from "./TodayHabit";
 import UserContext from "../../contexts/UserContext";
 import Header from "../Header";
 import axios from "axios";
@@ -20,6 +20,8 @@ function Today() {
 	console.log(config);
 
 	const date = dayjs().locale("pt-br").format("dddd, DD/MM");
+	const dayIndex = dayjs().day();
+	// console.log(dayIndex);
 
 	const [habits, setHabits] = useState(null);
 
@@ -29,10 +31,10 @@ function Today() {
 
 		if (userInfo.token) {
 			const promise = axios.get(URL, config);
-			console.log("mandei a requisição");
+			// console.log("mandei a requisição");
 			promise.then((response) => {
 				const { data } = response;
-				console.log(data);
+				// console.log(data);
 				setHabits(data);
 			});
 
@@ -40,35 +42,34 @@ function Today() {
 		}
 	}, [userInfo]);
 
+	console.log(habits, "sou a array habits");
+
 	function showTodayHabits() {
 		if (habits) {
 			return (
 				<Habits>
 					{habits.map((habit) => {
+						const { name, done, currentSequence, highestSequence } = habit;
 						return (
-							<Habit>
-								<div>
-									<span>{habit.name}</span>
-									<div>
-										<span>Sequência Atual: {habit.currentSequence} dias</span>
-										<span>Seu recorder: {habit.highestSequence} dias</span>
-									</div>
-								</div>
-								<CheckBox>
-									<img src={check} alt="check-icon" />
-								</CheckBox>
-							</Habit>
+							<TodayHabit
+								name={name}
+								done={done}
+								current={currentSequence}
+								highest={highestSequence}
+							/>
 						);
 					})}
 				</Habits>
 			);
 		}
+		return <></>;
 	}
 
 	return (
 		<Container>
 			<Header />
 			<Date>{date}</Date>
+			{showTodayHabits()}
 			<Footer />
 		</Container>
 	);
@@ -96,7 +97,3 @@ const Date = styled.div`
 `;
 
 const Habits = styled.div``;
-
-const Habit = styled.div``;
-
-const CheckBox = styled.div``;

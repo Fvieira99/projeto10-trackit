@@ -2,20 +2,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 import UserContext from "../../contexts/UserContext";
 import logo from "../../assets/logo-trackit.png";
 
 function Home() {
 	const [inputValue, setInputValue] = useState({ email: "", password: "" });
-	const [load, setLoad] = useState(false);
-
+	const [isLoading, setIsLoading] = useState(false);
 	const { setUserInfo } = useContext(UserContext);
 	const navigate = useNavigate();
 
 	function sendLoginInfo(e) {
 		e.preventDefault();
-		setLoad(true);
+		setIsLoading(true);
 		const URL =
 			"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
 
@@ -32,7 +32,7 @@ function Home() {
 			alert(
 				"Usuário e/ou email inválido(s) \n Caso ainda não tenha uma conta clique no link abaixo do botão 'Login' "
 			);
-			setLoad(false);
+			setIsLoading(false);
 			setInputValue({ email: "", password: "" });
 		});
 	}
@@ -41,11 +41,11 @@ function Home() {
 		return (
 			<>
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, email: e.target.value });
 					}}
-					load={load}
+					isLoading={isLoading}
 					value={inputValue.email}
 					id="email"
 					type="email"
@@ -55,21 +55,25 @@ function Home() {
 				></Input>
 
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, password: e.target.value });
 					}}
-					load={load}
+					isLoading={isLoading}
 					id="answer"
-					type="answer"
+					type="password"
 					name="a"
 					placeholder="senha"
 					required
 					value={inputValue.password}
 				></Input>
 
-				<Button load={load} type="submit">
-					Entrar
+				<Button isLoading={isLoading} type="submit">
+					{isLoading ? (
+						<ThreeDots color="#fff" height="40" width="40" />
+					) : (
+						"Entrar"
+					)}
 				</Button>
 			</>
 		);
@@ -131,8 +135,11 @@ const LoginForm = styled.form`
 `;
 
 const Button = styled.button`
-	pointer-events: ${(props) => (props.load ? "none" : "auto")};
-	opacity: ${(props) => (props.load ? "0.7" : "1")};
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: ${(props) => (props.isLoading ? "none" : "auto")};
+	opacity: ${(props) => (props.isLoading ? "0.7" : "1")};
 	width: 100%;
 	height: 45px;
 	border-radius: 5px;
@@ -146,17 +153,16 @@ const Button = styled.button`
 `;
 
 const Input = styled.input`
-	background-color: ${(props) => (props.load ? "#F2F2F2;" : "#FFFFFF;")}
+	background-color: ${(props) => (props.isLoading ? "#F2F2F2;" : "#FFFFFF;")}
 	width: 100%;
 	height: 45px;
 	border: 1px solid #d5d5d5;
 	border-radius: 5px;
-	text-indent: 5px;
+	text-indent: 10px;
 	font-family: "Lexend Deca";
 	font-style: normal;
 	font-weight: 400;
 	font-size: 18px;
-	color: #dbdbdb;
 	::placeholder {
 	color: #dbdbdb;
 	}

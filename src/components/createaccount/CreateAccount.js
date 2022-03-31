@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
+
 import logo from "../../assets/logo-trackit.png";
 
 function CreateAccount() {
@@ -12,15 +14,15 @@ function CreateAccount() {
 		password: "",
 	});
 
-	const [load, setLoad] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
 
-	console.log(load);
+	console.log(isLoading);
 
 	function sendAccountInfo(e) {
 		e.preventDefault();
-		setLoad(true);
+		setIsLoading(true);
 		const URL =
 			"https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
 		const promise = axios.post(URL, { ...inputValue });
@@ -31,11 +33,11 @@ function CreateAccount() {
 		promise.catch((error) => {
 			if (error.status === 409) {
 				alert("Usuario e/ou e-mail já existente(s)");
-				setLoad(false);
+				setIsLoading(false);
 				setInputValue({ email: "", name: "", image: "", password: "" });
 			} else {
 				alert("Por favor preencha corretamente o formulário");
-				setLoad(false);
+				setIsLoading(false);
 				setInputValue({ email: "", name: "", image: "", password: "" });
 			}
 		});
@@ -45,7 +47,7 @@ function CreateAccount() {
 		return (
 			<>
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, email: e.target.value });
 					}}
@@ -55,11 +57,11 @@ function CreateAccount() {
 					name="q"
 					required
 					placeholder="email"
-					load={load}
+					isLoading={isLoading}
 				></Input>
 
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, password: e.target.value });
 					}}
@@ -70,11 +72,11 @@ function CreateAccount() {
 					minLength="8"
 					required
 					placeholder="senha"
-					load={load}
+					isLoading={isLoading}
 				></Input>
 
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, name: e.target.value });
 					}}
@@ -85,11 +87,11 @@ function CreateAccount() {
 					name="n"
 					required
 					placeholder="nome"
-					load={load}
+					isLoading={isLoading}
 				></Input>
 
 				<Input
-					disabled={load}
+					disabled={isLoading}
 					onChange={(e) => {
 						setInputValue({ ...inputValue, image: e.target.value });
 					}}
@@ -100,18 +102,16 @@ function CreateAccount() {
 					name="p"
 					required
 					placeholder="foto"
-					load={load}
+					isLoading={isLoading}
 				></Input>
 
-				{load ? (
-					<Button load={load} type="submit">
-						Cadastrar
-					</Button>
-				) : (
-					<Button load={load} type="submit">
-						Carregando
-					</Button>
-				)}
+				<Button isLoading={isLoading} type="submit">
+					{isLoading ? (
+						<ThreeDots color="#fff" height="40" width="40" />
+					) : (
+						"Cadastrar"
+					)}
+				</Button>
 			</>
 		);
 	}
@@ -172,8 +172,8 @@ const SignUpForm = styled.form`
 `;
 
 const Button = styled.button`
-	pointer-events: ${(props) => (props.load ? "none" : "auto")};
-	opacity: ${(props) => (props.load ? "0.7" : "1")};
+	pointer-events: ${(props) => (props.isLoading ? "none" : "auto")};
+	opacity: ${(props) => (props.isLoading ? "0.7" : "1")};
 	width: 100%;
 	height: 45px;
 	border-radius: 5px;
@@ -187,7 +187,7 @@ const Button = styled.button`
 `;
 
 const Input = styled.input`
-	background-color: ${(props) => (props.load ? "#F2F2F2;" : "#FFFFFF;")}
+	background-color: ${(props) => (props.isLoading ? "#F2F2F2;" : "#FFFFFF;")}
 	width: 100%;
 	height: 45px;
 	border: 1px solid #d5d5d5;

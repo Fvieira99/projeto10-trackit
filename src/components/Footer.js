@@ -36,7 +36,7 @@ export default Footer;
 
 const Container = styled.div`
 	width: 100%;
-	height: 70px;
+	max-height: 70px;
 	background-color: #fff;
 	display: flex;
 	justify-content: space-around;
