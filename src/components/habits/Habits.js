@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { BsFillPlusSquareFill } from "react-icons/bs";
 
+import TodayHabitsContext from "../../contexts/TodayHabitsContext";
 import HabitsContext from "../../contexts/HabitsContext";
 import UserContext from "../../contexts/UserContext";
 import Header from "../Header";
@@ -11,6 +12,7 @@ import Habit from "./Habit";
 import Footer from "../Footer";
 
 function Habits() {
+	const { percentage } = useContext(TodayHabitsContext);
 	const { habits } = useContext(HabitsContext);
 	const [apiHabits, setApiHabits] = useState(null);
 	const [isCreatingHabit, setIsCreatingHabit] = useState(0);
@@ -87,7 +89,7 @@ function Habits() {
 				{showHabitForm()}
 				{showHabits()}
 			</Container>
-			<Footer />
+			<Footer percentage={percentage} />
 		</Wrapper>
 	);
 }
@@ -103,7 +105,7 @@ const Wrapper = styled.div`
 	background-color: #e5e5e5;
 `;
 
-const Container = styled.div`
+const Container = styled.main`
 	width: 100%;
 	display: flex;
 	flex-direction: column;

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import styled from "styled-components";
 import { useContext } from "react";
 
+import TodayHabitsContext from "../../contexts/TodayHabitsContext";
 import Footer from "../Footer";
 import TodayHabit from "./TodayHabit";
 import UserContext from "../../contexts/UserContext";
@@ -10,6 +11,14 @@ import Header from "../Header";
 import axios from "axios";
 
 function Today() {
+	const {
+		todayHabits,
+		setTodayHabits,
+		count,
+		setCount,
+		percentage,
+		setPercentage,
+	} = useContext(TodayHabitsContext);
 	const { userInfo } = useContext(UserContext);
 	const config = {
 		headers: {
@@ -17,13 +26,14 @@ function Today() {
 		},
 	};
 
-	console.log(config);
+	// console.log(config);
 
+	require("dayjs/locale/pt-br");
 	const date = dayjs().locale("pt-br").format("dddd, DD/MM");
 	const dayIndex = dayjs().day();
 	// console.log(dayIndex);
 
-	const [habits, setHabits] = useState(null);
+	// const [habits, setHabits] = useState(null);
 
 	useEffect(() => {
 		const URL =
@@ -35,27 +45,33 @@ function Today() {
 			promise.then((response) => {
 				const { data } = response;
 				// console.log(data);
-				setHabits(data);
+				setTodayHabits(data);
+				setCount(data.filter((habit) => habit.done).length);
+				setPercentage((count / data.length) * 100);
 			});
 
 			promise.catch((err) => console.log(err.response));
 		}
-	}, [userInfo]);
+	}, [userInfo, count]);
 
-	console.log(habits, "sou a array habits");
+	console.log(count);
+	console.log(percentage);
+	// console.log(todayHabits, "sou a array habits");
 
 	function showTodayHabits() {
-		if (habits) {
+		if (todayHabits) {
 			return (
 				<Habits>
-					{habits.map((habit) => {
-						const { name, done, currentSequence, highestSequence } = habit;
+					{todayHabits.map((habit, index) => {
+						const { name, done, currentSequence, highestSequence, id } = habit;
 						return (
 							<TodayHabit
+								i={index}
 								name={name}
 								done={done}
 								current={currentSequence}
 								highest={highestSequence}
+								id={id}
 							/>
 						);
 					})}
@@ -69,8 +85,13 @@ function Today() {
 		<Container>
 			<Header />
 			<Date>{date}</Date>
+			<Text count={count}>
+				{count > 0
+					? `${percentage}% dos hábitos concluídos`
+					: "Nenhum hábito concluído ainda"}
+			</Text>
 			{showTodayHabits()}
-			<Footer />
+			<Footer percentage={percentage} />
 		</Container>
 	);
 }
@@ -86,7 +107,7 @@ const Container = styled.div`
 	align-items: center;
 `;
 
-const Date = styled.div`
+const Date = styled.h1`
 	font-family: "Lexend Deca";
 	font-style: normal;
 	font-weight: 400;
@@ -96,4 +117,22 @@ const Date = styled.div`
 	margin-top: 100px;
 `;
 
-const Habits = styled.div``;
+const Habits = styled.div`
+	margin-top: 30px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+`;
+
+const Text = styled.span`
+	width: 90%;
+	font-family: "Lexend Deca";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 17.976px;
+	line-height: 22px;
+	color: ${(props) => (props.count > 0 ? "#8FC549;" : "#bababa;")};
+	margin-top: 5px;
+`;

@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 
 import "react-circular-progressbar/dist/styles.css";
 
-function Footer() {
+function Footer(props) {
+	const { percentage } = props;
 	return (
 		<Container>
 			<Link to="/habitos">
@@ -12,7 +13,7 @@ function Footer() {
 			</Link>
 			<Link to="/hoje">
 				<CircularProgressbar
-					value={0}
+					value={percentage}
 					text="Hoje"
 					background
 					backgroundPadding={5}
