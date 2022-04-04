@@ -1,13 +1,17 @@
 import { useContext } from "react";
 import { BsFillTrashFill } from "react-icons/bs";
 import Swal from "sweetalert2";
+import axios from "axios";
+import dayjs from "dayjs";
 
 import { Wrapper, Container, Weekday, Name } from "./styled/HabitStyled";
 import UserContext from "../../contexts/UserContext";
 import HabitsContext from "../../contexts/HabitsContext";
-import axios from "axios";
+import TodayHabitsContext from "../../contexts/TodayHabitsContext";
 
 function Habit(props) {
+	const { count, setPercentage, todayHabitsCount, setTodayHabitsCount } =
+		useContext(TodayHabitsContext);
 	const { name, days, id } = props;
 	const weekdays = ["D", "S", "T", "Q", "S", "S"];
 	const { habits, setHabits } = useContext(HabitsContext);
@@ -17,6 +21,7 @@ function Habit(props) {
 			Authorization: `Bearer ${userInfo.token}`,
 		},
 	};
+	const date = dayjs().day();
 
 	function deleteHabit() {
 		const URL = `
@@ -24,8 +29,15 @@ function Habit(props) {
         `;
 		const promise = axios.delete(URL, config);
 		promise.then((response) => {
-			const filteredHabits = habits.filter((habit) => habit.id !== id);
-			setHabits(filteredHabits);
+			if (days.some((day) => day === date)) {
+				console.log("entrei");
+				setTodayHabitsCount(todayHabitsCount - 1);
+				const filteredHabits = habits.filter((habit) => habit.id !== id);
+				setHabits(filteredHabits);
+			} else {
+				const filteredHabits = habits.filter((habit) => habit.id !== id);
+				setHabits(filteredHabits);
+			}
 		});
 		promise.catch((err) => {
 			console.log(err.response);
@@ -52,7 +64,6 @@ function Habit(props) {
 								}).then((result) => {
 									if (result.isConfirmed) {
 										deleteHabit();
-										setHabits();
 									}
 								});
 							}}

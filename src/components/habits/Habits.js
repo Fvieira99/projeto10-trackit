@@ -12,7 +12,8 @@ import Habit from "./Habit";
 import Footer from "../Footer";
 
 function Habits() {
-	const { percentage } = useContext(TodayHabitsContext);
+	const { percentage, setPercentage, todayHabitsCount, count } =
+		useContext(TodayHabitsContext);
 	const { habits } = useContext(HabitsContext);
 	const [apiHabits, setApiHabits] = useState(null);
 	const [isCreatingHabit, setIsCreatingHabit] = useState(0);
@@ -31,13 +32,14 @@ function Habits() {
 			const promise = axios.get(URL, config);
 
 			promise.then((response) => {
+				setPercentage(((count / todayHabitsCount) * 100).toFixed(0));
 				setApiHabits(response.data);
 			});
 			promise.catch((err) => {
 				console.log(err.response);
 			});
 		}
-	}, [habits, userInfo]);
+	}, [habits, userInfo, todayHabitsCount]);
 
 	function showHabitForm() {
 		return (

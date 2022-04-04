@@ -16,6 +16,7 @@ function App() {
 	const [userInfo, setUserInfo] = useState({});
 	const [habits, setHabits] = useState([]);
 	const [todayHabits, setTodayHabits] = useState([]);
+	const [todayHabitsCount, setTodayHabitsCount] = useState(0);
 	const [count, setCount] = useState(0);
 	const [percentage, setPercentage] = useState(0);
 
@@ -30,6 +31,8 @@ function App() {
 						setCount,
 						percentage,
 						setPercentage,
+						todayHabitsCount,
+						setTodayHabitsCount,
 					}}
 				>
 					<BrowserRouter>

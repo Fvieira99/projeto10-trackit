@@ -18,6 +18,7 @@ function Today() {
 		setCount,
 		percentage,
 		setPercentage,
+		setTodayHabitsCount,
 	} = useContext(TodayHabitsContext);
 	const { userInfo } = useContext(UserContext);
 	const config = {
@@ -40,6 +41,7 @@ function Today() {
 				const { data } = response;
 				setTodayHabits(data);
 				setCount(data.filter((habit) => habit.done).length);
+				setTodayHabitsCount(data.length);
 				setPercentage(((count / data.length) * 100).toFixed(0));
 			});
 
