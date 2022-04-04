@@ -23,6 +23,7 @@ const Date = styled.h1`
 
 const Habits = styled.div`
 	margin-top: 30px;
+	margin-bottom: 120px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;

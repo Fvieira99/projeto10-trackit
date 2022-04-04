@@ -26,11 +26,8 @@ function Today() {
 		},
 	};
 
-	// console.log(config);
-
 	require("dayjs/locale/pt-br");
 	const date = dayjs().locale("pt-br").format("dddd, DD/MM");
-	const dayIndex = dayjs().day();
 
 	useEffect(() => {
 		const URL =
@@ -43,7 +40,7 @@ function Today() {
 				const { data } = response;
 				setTodayHabits(data);
 				setCount(data.filter((habit) => habit.done).length);
-				setPercentage((count / data.length) * 100);
+				setPercentage(((count / data.length) * 100).toFixed(0));
 			});
 
 			promise.catch((err) => console.log(err.response));

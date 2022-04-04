@@ -31,7 +31,6 @@ function Habits() {
 			const promise = axios.get(URL, config);
 
 			promise.then((response) => {
-				console.log(response);
 				setApiHabits(response.data);
 			});
 			promise.catch((err) => {

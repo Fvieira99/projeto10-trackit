@@ -24,7 +24,6 @@ function Habit(props) {
         `;
 		const promise = axios.delete(URL, config);
 		promise.then((response) => {
-			console.log(response);
 			const filteredHabits = habits.filter((habit) => habit.id !== id);
 			setHabits(filteredHabits);
 		});
