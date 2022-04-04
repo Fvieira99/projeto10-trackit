@@ -30,7 +30,6 @@ function Habit(props) {
 		const promise = axios.delete(URL, config);
 		promise.then((response) => {
 			if (days.some((day) => day === date)) {
-				console.log("entrei");
 				setTodayHabitsCount(todayHabitsCount - 1);
 				const filteredHabits = habits.filter((habit) => habit.id !== id);
 				setHabits(filteredHabits);
